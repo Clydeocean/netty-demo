@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>websocket test</title>
+    <script>
+        var websocket;
+        if (!window.WebSocket) {
+            window.WebSocket = window.MozWebSocket;
+        }
+
+        if (window.WebSocket) {
+            websocket = new WebSocket("ws://localhost:8888/websocket");
+
+            websocket.onmessage = function (ev) {
+                document.getElementById("response").value = ev.data + "\r\n";
+            };
+
+            websocket.onopen = function (ev) {
+                document.getElementById("response").value = "connected server.";
+            };
+
+            websocket.onclose = function (ev) {
+                document.getElementById("response").value = "closed connection";
+            }
+        }
+
+        function sendMsg(msg) {
+            if (window.WebSocket) {
+                if (websocket.readyState === WebSocket.OPEN) {
+                    websocket.send(msg);
+                } else {
+                    alert("connect server failed.");
+                }
+            } else {
+                alert("sorry, unposrt websockt!");
+            }
+        }
+    </script>
+</head>
+<body>
+<form onsubmit="return false;">
+    <input type="text" name="msg" id="msg"/>
+    <input type="button" value="submit" onclick="sendMsg(this.form.msg.value)">
+    <hr color="red"/>
+    resposne content: <br/>
+    <textarea id="response" name="response" style="width: 1000px; height: 500px">
+
+        </textarea>
+</form>
+</body>
+</html>
